@@ -1,11 +1,13 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"net/http"
 
 	"github.com/NewHorizonIT/rategate/internal/config"
+	"github.com/NewHorizonIT/rategate/internal/infra/redis"
 	"github.com/NewHorizonIT/rategate/internal/server"
 )
 
@@ -16,6 +18,14 @@ func main() {
 
 	// Log Configuration
 	log.Printf("Configuration loaded: %+v", cfg)
+
+	// Connect to redis
+	redisClient := redis.NewClient(cfg.Redis)
+	// Test Redis connection
+	if err := redis.Ping(context.Background(), redisClient); err != nil {
+		log.Fatalf("Failed to connect to Redis: %v", err)
+	}
+	log.Println("[[Successfully connected to Redis]]")
 
 	// Setup route health check
 	r := server.SetupRoutes()
