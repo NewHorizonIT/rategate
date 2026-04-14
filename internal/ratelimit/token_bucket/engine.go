@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/NewHorizonIT/rategate/internal/infra/redis"
+	"github.com/NewHorizonIT/rategate/internal/ratelimit"
 	"github.com/NewHorizonIT/rategate/pkg/helper"
 )
 
@@ -18,16 +19,13 @@ func New(redis redis.RedisRepo) *TokenBucketEngine {
 
 func (t *TokenBucketEngine) Allow(
 	ctx context.Context,
-	tenant string,
-	user string,
-	endpoint string,
-	limit int,
-	window int,
+	policy ratelimit.Policy,
+	req ratelimit.Request,
 ) (bool, int64, error) {
 
-	key := helper.BuildKey(tenant, user, endpoint)
+	key := helper.BuildKey(req.Tenant, req.User, req.Endpoint)
 
-	res, err := t.redis.Script.Run(ctx, t.redis.Client, []string{key}, limit, window)
+	res, err := t.redis.Script.Run(ctx, t.redis.Client, []string{key}, policy.Limit, policy.Window)
 	if err != nil {
 		return false, 0, fmt.Errorf("lua exec failed: %w", err)
 	}
