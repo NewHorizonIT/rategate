@@ -1,9 +1,11 @@
 package ratelimit
 
 type Request struct {
-	Tenant string
-	Key    string
-	Cost   int
+	Tenant   string
+	Key      string
+	Cost     int
+	User     string
+	Endpoint string
 }
 
 type Result struct {
