@@ -32,3 +32,18 @@ Naive implementations often fail due to:
 
 **RateGate solves these problems with a distributed, Redis-backed design.**
 
+## Getting Started
+
+### Requirement
+
+### Run the system
+
+#### Step 1: Initialize the file .env
+``` bash
+mkdir .env && cat .env.example > .env
+```
+
+### Step 2: Run docker compose
+``` bash
+docker compose up --build -d
+```
